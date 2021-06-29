@@ -1,0 +1,12 @@
+{
+  "commit": {
+    "commit": "d4f74d892a41943e3f72ed12dddf3d3da7be546e",
+    "author": "Scott Chamberlain <sckott@fastmail.com>",
+    "time": "2021-06-29 21:23:22",
+    "files": 4,
+    "merge": false,
+    "message": "#396 fix lcd(): use data.table instead of read.csv; fix some tests,;bump ver\n"
+  },
+  "remote": "https://github.com/ropensci/rnoaa",
+  "pkg": "rnoaa"
+}
