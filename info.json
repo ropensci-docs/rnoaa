@@ -1,0 +1,12 @@
+{
+  "commit": {
+    "commit": "95868c968c62768fe7e8143a8f631b97de120910",
+    "author": "Maëlle Salmon <maelle.salmon@yahoo.se>",
+    "time": "2023-06-01 11:31:19",
+    "files": 1,
+    "merge": false,
+    "message": "docs: fix pkgdown config cc @djhocking\n"
+  },
+  "repo": "https://github.com/ropensci/rnoaa",
+  "pkg": "rnoaa"
+}

@@ -1,0 +1,17 @@
+pandoc: 2.16.2
+pkgdown: 2.0.7
+pkgdown_sha: ~
+articles:
+  buoy_vignette: buoy_vignette.html
+  homr_vignette: homr_vignette.html
+  ncdc_attributes: ncdc_attributes.html
+  ncdc_vignette: ncdc_vignette.html
+  ncdc_workflow: ncdc_workflow.html
+  rnoaa: rnoaa.html
+  seaice_vignette: seaice_vignette.html
+  swdi_vignette: swdi_vignette.html
+last_built: 2024-03-27T06:13Z
+urls:
+  reference: https://docs.ropensci.org/rnoaa/reference
+  article: https://docs.ropensci.org/rnoaa/articles
+
