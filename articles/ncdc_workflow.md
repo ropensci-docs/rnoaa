@@ -1,0 +1,81 @@
+# NCDC workflow
+
+This vignette is intended to demonstrate a workflow for using the NOAA
+NCDC data using the `ncdc*()` functions. It can be confusing to
+understand how to get at data you want - that’s the motivation for this
+vignette. Other vignettes show more thorough and different examples for
+specific data sources.
+
+## Load rnoaa
+
+``` r
+
+library('rnoaa')
+```
+
+## The workflow
+
+- Look for weather stations & get station id(s)
+- Find out what type of data is available for those stations
+- Search for climate data for stations (optionally specify type of data
+  to get)
+
+### Look for weather stations & get station id(s)
+
+``` r
+
+ids <- ncdc_stations(locationid='FIPS:12017')$data$id[1:13]
+id <- "GHCND:US1FLCT0002"
+```
+
+Just information for one station
+
+``` r
+
+ncdc_stations(stationid = id)
+```
+
+### Find out what type of data is available for those stations
+
+There are various ways to look for data types available. First, **data
+categories**:
+
+``` r
+
+ncdc_datacats(stationid = id)
+```
+
+Another way is looking for **data sets**:
+
+``` r
+
+ncdc_datasets(stationid = id)
+```
+
+Yet another way is looking for **data types**:
+
+``` r
+
+ncdc_datatypes(datasetid = "GHCND", stationid = id)
+```
+
+### Search for climate data for stations (optionally specify type of data to get)
+
+Now that you know what kinds of data categories, data sets, and data
+types are available for your station you can search for data with any of
+those as filters.
+
+Importantly, note that you have to specify three things in a call to the
+`ncdc` function:
+
+- `datasetid`
+- `startdate`
+- `enddate`
+
+Here, we are specifying the `datasetid`, `stationid`, `datatypeid`,
+`startdate`, and `enddate`
+
+``` r
+
+ncdc(datasetid = "GHCND", stationid = id, datatypeid = "PRCP", startdate = "2012-10-01", enddate = "2013-01-01")
+```

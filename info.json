@@ -1,0 +1,13 @@
+{
+  "commit": {
+    "commit": "b26b4c53821c73161852730b6fdb9eafe23220df",
+    "author": "Jeroen Ooms <jeroenooms@gmail.com>",
+    "time": "2025-02-04T14:23:38Z",
+    "files": 1,
+    "merge": false,
+    "message": "Use rOpenSci ROR link as per CRAN request\n"
+  },
+  "repo": "https://github.com/ropensci/rnoaa",
+  "pkg": "rnoaa",
+  "time": "2026-08-30T08:12:28Z"
+}

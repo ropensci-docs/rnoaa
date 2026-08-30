@@ -1,0 +1,160 @@
+# Get possible data types for a particular dataset
+
+From the NOAA API docs: Describes the type of data, acts as a label. For
+example: If it's 64 degrees out right now, then the data type is Air
+Temperature and the data is 64.
+
+## Usage
+
+``` r
+ncdc_datatypes(
+  datasetid = NULL,
+  datatypeid = NULL,
+  datacategoryid = NULL,
+  stationid = NULL,
+  locationid = NULL,
+  startdate = NULL,
+  enddate = NULL,
+  sortfield = NULL,
+  sortorder = NULL,
+  limit = 25,
+  offset = NULL,
+  token = NULL,
+  ...
+)
+```
+
+## Arguments
+
+- datasetid:
+
+  (optional) Accepts a valid dataset id or a vector or list of them.
+  Data returned will be from the dataset specified.
+
+- datatypeid:
+
+  Accepts a valid data type id or a vector or list of data type ids.
+  (optional)
+
+- datacategoryid:
+
+  Optional. Accepts a valid data category id or a vector or list of data
+  category ids (although it is rare to have a data type with more than
+  one data category)
+
+- stationid:
+
+  Accepts a valid station id or a vector or list of station ids
+
+- locationid:
+
+  Accepts a valid location id or a vector or list of location ids
+  (optional)
+
+- startdate:
+
+  (optional) Accepts valid ISO formated date (yyyy-mm-dd) or date time
+  (YYYY-MM-DDThh:mm:ss). Data returned will have data after the
+  specified date. The date range must be less than 1 year.
+
+- enddate:
+
+  (optional) Accepts valid ISO formated date (yyyy-mm-dd) or date time
+  (YYYY-MM-DDThh:mm:ss). Data returned will have data before the
+  specified date. The date range must be less than 1 year.
+
+- sortfield:
+
+  The field to sort results by. Supports id, name, mindate, maxdate, and
+  datacoverage fields (optional)
+
+- sortorder:
+
+  Which order to sort by, asc or desc. Defaults to asc (optional)
+
+- limit:
+
+  Defaults to 25, limits the number of results in the response. Maximum
+  is 1000 (optional)
+
+- offset:
+
+  Defaults to 0, used to offset the resultlist (optional)
+
+- token:
+
+  This must be a valid token token supplied to you by NCDC's Climate
+  Data Online access token generator. (required) See **Authentication**
+  section below for more details.
+
+- ...:
+
+  Curl options passed on to
+  [`HttpClient`](https://docs.ropensci.org/crul/reference/HttpClient.html)
+  (optional)
+
+## Value
+
+A `data.frame` for all datasets, or a list of length two, each with a
+data.frame
+
+## Authentication
+
+Get an API key (aka, token) at https://www.ncdc.noaa.gov/cdo-web/token
+You can pass your token in as an argument or store it one of two places:
+
+- your .Rprofile file with the entry
+  `options(noaakey = "your-noaa-token")`
+
+- your .Renviron file with the entry `NOAA_KEY=your-noaa-token`
+
+See [`Startup`](https://rdrr.io/r/base/Startup.html) for information on
+how to create/find your .Rrofile and .Renviron files
+
+## References
+
+https://www.ncdc.noaa.gov/cdo-web/webservices/v2
+
+## See also
+
+Other ncdc:
+[`ncdc_combine()`](https://docs.ropensci.org/rnoaa/reference/ncdc_combine.md),
+[`ncdc_datacats()`](https://docs.ropensci.org/rnoaa/reference/ncdc_datacats.md),
+[`ncdc_datasets()`](https://docs.ropensci.org/rnoaa/reference/ncdc_datasets.md),
+[`ncdc_locs_cats()`](https://docs.ropensci.org/rnoaa/reference/ncdc_locs_cats.md),
+[`ncdc_locs()`](https://docs.ropensci.org/rnoaa/reference/ncdc_locs.md),
+[`ncdc_plot()`](https://docs.ropensci.org/rnoaa/reference/ncdc_plot.md),
+[`ncdc_stations()`](https://docs.ropensci.org/rnoaa/reference/ncdc_stations.md),
+[`ncdc()`](https://docs.ropensci.org/rnoaa/reference/ncdc.md)
+
+## Examples
+
+``` r
+if (FALSE) { # \dontrun{
+# Fetch available data types
+ncdc_datatypes()
+
+# Fetch more information about the ACMH data type id, or the ACSC
+ncdc_datatypes(datatypeid="ACMH")
+ncdc_datatypes(datatypeid="ACSC")
+
+# datasetid, one or many
+## ANNUAL should be replaced by GSOY, but both exist and give
+## different answers
+ncdc_datatypes(datasetid="ANNUAL")
+ncdc_datatypes(datasetid="GSOY")
+ncdc_datatypes(datasetid=c("ANNUAL", "PRECIP_HLY"))
+
+# Fetch data types with the air temperature data category
+ncdc_datatypes(datacategoryid="TEMP", limit=56)
+ncdc_datatypes(datacategoryid=c("TEMP", "AUPRCP"))
+
+# Fetch data types that support a given set of stations
+ncdc_datatypes(stationid='COOP:310090')
+ncdc_datatypes(stationid=c('COOP:310090','COOP:310184','COOP:310212'))
+
+# Fetch data types that support a given set of loncationids
+ncdc_datatypes(locationid='CITY:AG000001')
+ncdc_datatypes(locationid=c('CITY:AG000001','CITY:AG000004'))
+} # }
+```

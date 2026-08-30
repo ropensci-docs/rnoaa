@@ -1,0 +1,284 @@
+# HOMR metadata
+
+`HOMR` (Historical Observing Metadata Repository) provides climate
+station metadata. It’s a NOAA service.
+
+Find out more about HOMR at <https://www.ncdc.noaa.gov/homr/> and the
+HOMR API at <https://www.ncdc.noaa.gov/homr/api>
+
+## Load rnoaa
+
+``` r
+
+library('rnoaa')
+```
+
+## Search by station identifier
+
+You can do this in various ways. Using the `qid` parameter (stands or
+qualified ID, as far as I know), you can search by suffix (e.g.,
+`046742`), or both separated by a colon (e.g., `COOP:046742`).
+
+By station suffix
+
+``` r
+
+res <- homr(qid = ':046742')
+names(res)
+#> [1] "20002078"
+names(res[['20002078']])
+#>  [1] "id"          "head"        "namez"       "identifiers" "status"     
+#>  [6] "platform"    "relocations" "remarks"     "updates"     "elements"   
+#> [11] "location"
+res$`20002078`[1:3]
+#> $id
+#> [1] "20002078"
+#> 
+#> $head
+#>                  preferredName latitude_dec longitude_dec precision
+#> 1 PASO ROBLES MUNICIPAL AP, CA      35.6697     -120.6283   DDddddd
+#>             por.beginDate por.endDate
+#> 1 1949-10-05T00:00:00.000     Present
+#> 
+#> $namez
+#>                         name  nameType
+#> 1   PASO ROBLES MUNICIPAL AP      COOP
+#> 2   PASO ROBLES MUNICIPAL AP PRINCIPAL
+#> 3 PASO ROBLES MUNICIPAL ARPT       PUB
+```
+
+By both
+
+``` r
+
+res <- homr(qid = 'COOP:046742')
+names(res)
+#> [1] "20002078"
+names(res[['20002078']])
+#>  [1] "id"          "head"        "namez"       "identifiers" "status"     
+#>  [6] "platform"    "relocations" "remarks"     "updates"     "elements"   
+#> [11] "location"
+res$`20002078`[1:5]
+#> $id
+#> [1] "20002078"
+#> 
+#> $head
+#>                  preferredName latitude_dec longitude_dec precision
+#> 1 PASO ROBLES MUNICIPAL AP, CA      35.6697     -120.6283   DDddddd
+#>             por.beginDate por.endDate
+#> 1 1949-10-05T00:00:00.000     Present
+#> 
+#> $namez
+#>                         name  nameType
+#> 1   PASO ROBLES MUNICIPAL AP      COOP
+#> 2   PASO ROBLES MUNICIPAL AP PRINCIPAL
+#> 3 PASO ROBLES MUNICIPAL ARPT       PUB
+#> 
+#> $identifiers
+#>      idType          id
+#> 1     GHCND USW00093209
+#> 2   GHCNMLT USW00093209
+#> 3      COOP      046742
+#> 4      WBAN       93209
+#> 5       FAA         PRB
+#> 6      ICAO        KPRB
+#> 7     NWSLI         PRB
+#> 8 NCDCSTNID    20002078
+#> 
+#> $status
+#> NULL
+```
+
+## Search by station parameter
+
+You can also search by station identifier, which is different from the
+`qid` above.
+
+``` r
+
+res <- homr(station=20002078)
+names(res)
+#> [1] "20002078"
+names(res[['20002078']])
+#>  [1] "id"          "head"        "namez"       "identifiers" "status"     
+#>  [6] "platform"    "relocations" "remarks"     "updates"     "elements"   
+#> [11] "location"
+res$`20002078`[4:6]
+#> $identifiers
+#>      idType          id
+#> 1     GHCND USW00093209
+#> 2   GHCNMLT USW00093209
+#> 3      COOP      046742
+#> 4      WBAN       93209
+#> 5       FAA         PRB
+#> 6      ICAO        KPRB
+#> 7     NWSLI         PRB
+#> 8 NCDCSTNID    20002078
+#> 
+#> $status
+#> NULL
+#> 
+#> $platform
+#> [1] "COOP"
+```
+
+## Search by state and county
+
+By state
+
+``` r
+
+res <- homr(state='DE', begindate='2005-01-01', enddate='2005-02-01')
+names(res)
+#>  [1] "10001871" "10100161" "10100162" "10100164" "10100166" "20004155"
+#>  [7] "20004158" "20004160" "20004162" "20004163" "20004167" "20004168"
+#> [13] "20004171" "20004176" "20004178" "20004179" "20004180" "20004182"
+#> [19] "20004184" "20004185" "30001464" "30001561" "30001831" "30075067"
+```
+
+By country
+
+``` r
+
+res <- homr(country='GHANA', begindate='2005-01-01', enddate='2005-02-01')
+library("dplyr")
+#> 
+#> Attaching package: 'dplyr'
+#> The following objects are masked from 'package:stats':
+#> 
+#>     filter, lag
+#> The following objects are masked from 'package:base':
+#> 
+#>     intersect, setdiff, setequal, union
+bind_rows(lapply(res, function(x) x$location$latlon))
+#>    latitude_rptd longitude_rptd latitude_dec longitude_dec latitude_dms
+#> 1            6.2         -2.333          6.2        -2.333   06,12,00,N
+#> 2          6.083           -.25        6.083         -0.25   06,04,59,N
+#> 3          5.933          -.983        5.933        -0.983   05,55,59,N
+#> 4          9.033         -2.483        9.033        -2.483   09,01,59,N
+#> 5           7.75           -2.1         7.75          -2.1   07,45,00,N
+#> 6         10.083         -2.508       10.083        -2.508   10,04,59,N
+#> 7          9.557          -.863        9.557        -0.863   09,33,25,N
+#> 8          5.783           .633        5.783         0.633   05,46,59,N
+#> 9          4.867         -2.233        4.867        -2.233   04,52,01,N
+#> 10           6.1           .117          6.1         0.117   06,06,00,N
+#> 11         7.362         -2.329        7.362        -2.329   07,21,43,N
+#> 12         5.617              0        5.617           0.0   05,37,01,N
+#> 13          10.9           -1.1         10.9          -1.1   10,54,00,N
+#> 14         7.817          -.033        7.817        -0.033   07,49,01,N
+#> 15           6.6           .467          6.6         0.467   06,36,00,N
+#> 16         5.605          -.167        5.605        -0.167   05,36,18,N
+#> 17         6.715         -1.591        6.715        -1.591   06,42,54,N
+#> 18         4.896         -1.775        4.896        -1.775   04,53,46,N
+#> 19          5.85         -.1833         5.85       -0.1833   05,51,00,N
+#> 20          5.55            -.2         5.55          -0.2   05,33,00,N
+#> 21           9.4            -.9          9.4          -0.9   09,24,00,N
+#> 22             5             -2          5.0          -2.0   05,00,00,N
+#> 23          6.47            .33         6.47          0.33   06,28,12,N
+#> 24           8.2            .57          8.2          0.57   08,12,00,N
+#> 25           9.5           -.85          9.5         -0.85   09,30,00,N
+#>    longitude_dms          date.beginDate            date.endDate
+#> 1    002,19,59,W                 Unknown                 Present
+#> 2    000,15,00,W                 Unknown                 Present
+#> 3    000,58,59,W                 Unknown                 Present
+#> 4    002,28,59,W                 Unknown                 Present
+#> 5    002,06,00,W                 Unknown                 Present
+#> 6    002,30,29,W                 Unknown                 Present
+#> 7    000,51,47,W                 Unknown                 Present
+#> 8    000,37,59,E                 Unknown                 Present
+#> 9    002,13,59,W                 Unknown                 Present
+#> 10   000,07,01,E                 Unknown                 Present
+#> 11   002,19,44,W                 Unknown                 Present
+#> 12   000,00,00,E                 Unknown                 Present
+#> 13   001,06,00,W                 Unknown                 Present
+#> 14   000,01,59,W                 Unknown                 Present
+#> 15   000,28,01,E                 Unknown                 Present
+#> 16   000,10,01,W                 Unknown                 Present
+#> 17   001,35,28,W                 Unknown                 Present
+#> 18   001,46,30,W                 Unknown                 Present
+#> 19   000,11,00,W                 Unknown                 Present
+#> 20   000,12,00,W                 Unknown                 Present
+#> 21   000,54,00,W                 Unknown                 Present
+#> 22   002,00,00,W                 Unknown                 Present
+#> 23   000,19,48,E                 Unknown                 Present
+#> 24   000,34,12,E                 Unknown                 Present
+#> 25   000,51,00,W 1973-01-01T00:00:00.000 2008-12-31T00:00:00.000
+```
+
+By state and county
+
+``` r
+
+res <- homr(state='NC', county='BUNCOMBE', headersOnly = TRUE)
+head(bind_rows(lapply(res, "[[", "head")))
+#>                     preferredName latitude_dec longitude_dec
+#> 1           ASHEVILLE 5.6 NNW, NC      35.6534      -82.5709
+#> 2 ASHEVILLE HENDERSONVILLE AP, NC     35.43333     -82.48333
+#> 3                 WEAVERVILLE, NC         35.7     -82.56667
+#> 4       BLACK MOUNTAIN 2.4 SE, NC    35.585695     -82.30557
+#> 5                GARREN CREEK, NC     35.51667     -82.33333
+#> 6               BILTMORE 2 SE, NC     35.56833       -82.545
+#>             por.beginDate             por.endDate precision
+#> 1 2007-08-27T00:00:00.000                 Present      <NA>
+#> 2 1940-11-01T00:00:00.000 1960-12-31T00:00:00.000      DDMM
+#> 3 1946-03-30T00:00:00.000 1992-10-01T00:00:00.000      DDMM
+#> 4 2013-10-25T00:00:00.000                 Present      <NA>
+#> 5 1936-09-25T00:00:00.000 1962-03-31T00:00:00.000      DDMM
+#> 6 1963-10-01T00:00:00.000 2007-11-14T00:00:00.000    DDMMSS
+```
+
+## Get header information only
+
+``` r
+
+res <- homr(headersOnly=TRUE, state='DE')
+head(bind_rows(lapply(res, "[[", "head")))
+#>               preferredName     latitude_dec     longitude_dec
+#> 1         LEWES 1.5 SSW, DE        38.758827        -75.157875
+#> 2      SELBYVILLE 7.1 E, DE        38.461155        -75.089328
+#> 3       MILFORD 1.3 WSW, DE 38.9052848815918 -75.4544143676758
+#> 4    MIDDLETOWN 4.1 NNW, DE 39.5044784545898 -75.7494506835938
+#> 5 WILMINGTON PORTER RES, DE          39.7739          -75.5414
+#> 6             BEAR 2 SW, DE          39.5917          -75.7325
+#>             por.beginDate             por.endDate precision
+#> 1 2014-12-08T00:00:00.000                 Present      <NA>
+#> 2 2012-07-14T00:00:00.000                 Present      <NA>
+#> 3 2016-03-13T00:00:00.000 2017-12-31T00:00:00.000      <NA>
+#> 4 2016-03-12T00:00:00.000                 Present      <NA>
+#> 5 1912-07-12T00:00:00.000                 Present   DDddddd
+#> 6 2003-02-01T00:00:00.000 2013-04-02T00:00:00.000    DDMMSS
+```
+
+## Data definitions
+
+The data returned is the same format for all, so a separate function is
+provided to get metadata. The function
+[`homr_definitions()`](https://docs.ropensci.org/rnoaa/reference/homr_definitions.md)
+does query the HOMR API, so does get updated metadata - i.e., it’s not a
+static dataset stored locally.
+
+``` r
+
+head( homr_definitions() )
+#>   defType  abbr                fullName    displayName
+#> 1     ids GHCND        GHCND IDENTIFIER       GHCND ID
+#> 2     ids  COOP             COOP NUMBER        COOP ID
+#> 3     ids  WBAN             WBAN NUMBER        WBAN ID
+#> 4     ids   FAA FAA LOCATION IDENTIFIER         FAA ID
+#> 5     ids  ICAO                 ICAO ID        ICAO ID
+#> 6     ids TRANS          TRANSMITTAL ID Transmittal ID
+#>                                                                                                                                 description
+#> 1                                                                          GLOBAL HISTORICAL CLIMATOLOGY NETWORK - DAILY (GHCND) IDENTIFIER
+#> 2                                                                                   NATIONAL WEATHER SERVICE COOPERATIVE NETWORK IDENTIFIER
+#> 3                                                                                                       WEATHER-BUREAU-ARMY-NAVY IDENTIFIER
+#> 4                                                                                                FEDERAL AVIATION ADMINISTRATION IDENTIFIER
+#> 5                                                                                      INTERNATIONAL CIVIL AVIATION ORGANIZATION IDENTIFIER
+#> 6 MISCELLANEOUS IDENTIFIER THAT DOES NOT FALL INTO AN OFFICIALLY SOURCED CATEGORY AND IS NEEDED IN SUPPORT OF NCEI DATA PRODUCTS AND INGEST
+#>   cssaName ghcndName
+#> 1     <NA>      <NA>
+#> 2     <NA>      <NA>
+#> 3     <NA>      <NA>
+#> 4     <NA>      <NA>
+#> 5     <NA>      <NA>
+#> 6     <NA>      <NA>
+```
